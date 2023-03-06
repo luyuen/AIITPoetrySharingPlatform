@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.0.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>420</x>
+      <y>170</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Stereotype&gt;&gt;
+Package: Opus
+{Some Properties}
+--
+-id: Long
+_-ClassAttribute: Long_
+--
+#Operation(i: int): int
+/+AbstractOperation()/
+--
+Responsibilities
+-- Resp1
+*-- Resp2*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>1030</x>
+      <y>270</y>
+      <w>120</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Use case 2
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
