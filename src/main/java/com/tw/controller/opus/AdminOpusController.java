@@ -47,6 +47,7 @@ public class AdminOpusController {
 
 	@PostMapping("/insert_opus/controller")
 	public String insertOpus(@RequestParam("opus_name") String opus_name,
+//			@RequestParam("pptfile") MultipartFile pptfile,
 			@RequestParam("opus_member") String opus_member, @RequestParam("imagefile") MultipartFile imagefile,
 			@RequestParam("audiofile") MultipartFile audiofile, @RequestParam("opus_content") String opus_content,
 			Model model) throws IllegalStateException, IOException {
@@ -75,6 +76,14 @@ public class AdminOpusController {
 //		if (!saveFile1.getParentFile().exists()) {
 //			saveFile1.getParentFile().mkdirs();
 //		}
+//		String pptFileNameString = pptfile.getOriginalFilename();
+//		String savePptFileTempDir = request.getSession().getServletContext().getRealPath("/") + "pptFileTempDir\\";
+//		File pptFile = new File(savePptFileTempDir);
+//		pptFile.mkdirs();
+//		
+//		String savePptFilePath = savePptFileTempDir + pptFileNameString;
+//		File savePptFile = new File(savePptFilePath);
+//		imagefile.transferTo(savePptFile);
 
 		String imageFileNameString = imagefile.getOriginalFilename();
 		String saveImageFileTempDir = request.getSession().getServletContext().getRealPath("/") + "imageFileTempDir\\";
@@ -84,6 +93,7 @@ public class AdminOpusController {
 		String saveImageFilePath = saveImageFileTempDir + imageFileNameString;
 		File saveImageFile = new File(saveImageFilePath);
 		imagefile.transferTo(saveImageFile);
+		
 
 		String audioFileNameString = audiofile.getOriginalFilename();
 		String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/") + "audioFileTempDir\\";
@@ -94,15 +104,20 @@ public class AdminOpusController {
 		File saveAudioFile = new File(saveAudioFilePath);
 		audiofile.transferTo(saveAudioFile);
 
+//		System.out.println("save:" + savePptFile);
 		System.out.println("save:" + saveImageFile);
 		System.out.println("save:" + saveAudioFile);
 
 		try (FileInputStream image = new FileInputStream(saveImageFilePath)) {
 			try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
+//				try (FileInputStream ppt = new FileInputStream(savePptFilePath)) {
+				
 
+//					byte[] pptByte = new byte[ppt.available()];
 				byte[] imageByte = new byte[image.available()];
 				byte[] audioByte = new byte[audio.available()];
 
+//				ppt.read();
 				image.read();
 				audio.read();
 
@@ -111,6 +126,7 @@ public class AdminOpusController {
 					OpusBean opus = new OpusBean();
 					opus.setOpus_name(opus_name);
 					opus.setOpus_member(opus_member);
+					
 					opus.setOpus_imageName(imageFileNameString);
 					opus.setOpus_audioName(audioFileNameString);
 					opus.setOpus_image(imageByte);
@@ -123,6 +139,7 @@ public class AdminOpusController {
 				}
 			}
 		}
+//		}
 		return null;
 
 	}
@@ -130,6 +147,120 @@ public class AdminOpusController {
 	@GetMapping("/preview_opus/{opus_id}")
 	public String previewOpusController(@PathVariable("opus_id") int opus_id, Model model) {
 		OpusBean findbyid = opusService.queryById(opus_id);
+		
+//		 @GetMapping("/showPPT")
+//		    public void showPPT(@RequestParam("path") String path,HttpServletResponse response) throws IOException {
+//		        byte[] buffer = new byte[1024 * 4];
+//		        String type = path.substring(path.lastIndexOf(".") + 1);
+//		        //转换pdf文件,如存在则直接显示pdf文件
+//		        String pdf = path.replace(type, "pdf");
+//		        File pdfFile = new File(pdf);
+//		        if (pdfFile.exists()) {
+//		            outFile(buffer, pdfFile, response);
+//		        } else {
+//		            FileInputStream in = new FileInputStream(path);
+//		            ZipSecureFile.setMinInflateRatio(-1.0d);
+//		            XMLSlideShow xmlSlideShow = new XMLSlideShow(in);
+//		            in.close();
+//		            // 获取大小
+//		            Dimension pgsize = xmlSlideShow.getPageSize();
+//		            // 获取幻灯片
+//		            List<XSLFSlide> slides = xmlSlideShow.getSlides();
+//		            List<File> imageList = new ArrayList<>();
+//		            for (int i = 0; i < slides.size(); i++) {
+//		                // 解决乱码问题
+//		                List<XSLFShape> shapes = slides.get(i).getShapes();
+//		                for (XSLFShape shape : shapes) {
+//		                    if (shape instanceof XSLFTextShape) {
+//		                        XSLFTextShape sh = (XSLFTextShape) shape;
+//		                        List<XSLFTextParagraph> textParagraphs = sh.getTextParagraphs();
+//		                        for (XSLFTextParagraph xslfTextParagraph : textParagraphs) {
+//		                            List<XSLFTextRun> textRuns = xslfTextParagraph.getTextRuns();
+//		                            for (XSLFTextRun xslfTextRun : textRuns) {
+//		                                xslfTextRun.setFontFamily("宋体");
+//		                            }
+//		                        }
+//		                    }
+//		                }
+//		                //根据幻灯片大小生成图片
+//		                BufferedImage img = new BufferedImage(pgsize.width, pgsize.height, BufferedImage.TYPE_INT_RGB);
+//		                Graphics2D graphics = img.createGraphics();
+//		                graphics.setPaint(Color.white);
+//		                graphics.fill(new Rectangle2D.Float(0, 0, pgsize.width, pgsize.height));
+//		                // 将PPT内容绘制到img上
+//		                slides.get(i).draw(graphics);
+//		                //图片将要存放的路径
+//		                String absolutePath = basePath + File.separator+ (i + 1) + ".jpg";
+//		                File jpegFile = new File(absolutePath);
+//		                if (!jpegFile.exists()) {
+//		                    // 判断如果图片存在则不再重复创建，建议将图片存放到一个特定目录，后面会统一删除
+//		                    FileOutputStream fileOutputStream = new FileOutputStream(jpegFile);
+//		                    ImageIO.write(img, "jpg", fileOutputStream);
+//		                }
+//		                // 图片路径存放
+//		                imageList.add(jpegFile);
+//		            }
+//		            File file = png2Pdf(imageList, pdf);
+//		            outFile(buffer, file, response);
+//		        }
+//		    }
+
+//		    private void outFile(byte[] buffer, File pdfFile, HttpServletResponse response) throws IOException {
+//		        ByteArrayOutputStream out;
+//		        int n = 0;
+//		        FileInputStream fileInputStream = new FileInputStream(pdfFile);
+//		        out = new ByteArrayOutputStream();
+//		        ServletOutputStream outputStream = response.getOutputStream();
+//		        while ((n = fileInputStream.read(buffer)) != -1) {
+//		            out.write(buffer, 0, n);
+//		        }
+//		        outputStream.write(out.toByteArray());
+//		        outputStream.flush();
+//		    }
+//			//将图片列表转换为PDF格式文件并存储
+//		    public File png2Pdf(List<File> pngFiles, String pdfFilePath) {
+//		        Document document = new Document();
+//		        File pdfFile = null;
+//		        long startTime = System.currentTimeMillis();
+//		        try {
+//		            pdfFile = new File(pdfFilePath);
+//		            if (pdfFile.exists()) {
+//		                return pdfFile;
+//		            }
+//		            PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
+//		            document.open();
+//		            pngFiles.forEach(pngFile -> {
+//		                try {
+//		                    Image png = Image.getInstance(pngFile.getCanonicalPath());
+//		                    png.scalePercent(50);
+//		                    document.add(png);
+//		                } catch (Exception e) {
+//		                    System.out.println("png2Pdf exception");
+//		                }
+//		            });
+//		            document.close();
+//		            return pdfFile;
+//		        } catch (Exception e) {
+//		            System.out.println(String.format("png2Pdf %s exception", pdfFilePath));
+//		        } finally {
+//		            if (document.isOpen()) {
+//		                document.close();
+//		            }
+//		            // 删除临时生成的png图片
+//		            for (File pngFile : pngFiles) {
+//		                try {
+//		                    FileUtils.delete(pngFile);
+//		                } catch (IOException e) {
+//		                    e.printStackTrace();
+//		                }
+//		            }
+//		            long endTime = System.currentTimeMillis();
+//		            System.out.println("png2Pdf耗时：" + (endTime - startTime));
+//		        }
+//
+//		        return null;
+//		    }
+
 		model.addAttribute("findbyopusid", findbyid);
 
 		return "admin/opus/preview_opus.html";

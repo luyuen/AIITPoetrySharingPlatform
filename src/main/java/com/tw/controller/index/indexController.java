@@ -14,6 +14,6 @@ public class indexController {
 	@GetMapping(path = {"/admin","/admin/home"})
 	public String adminController() {
 		return "admin/index.html";
-	}
+	}			
 
 }

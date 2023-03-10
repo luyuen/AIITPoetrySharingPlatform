@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class AudioServer {
+public class AudioService {
 
 	@Autowired
 	private AudioRepository audioRepository;

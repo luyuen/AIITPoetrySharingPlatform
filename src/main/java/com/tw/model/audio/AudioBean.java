@@ -16,7 +16,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "AUDIO")
@@ -29,6 +29,8 @@ public class AudioBean {
 	private int audio_id;
 	@Column(name = "AUDIO_NAME")
 	private String audio_name;
+	@Column(name = "AUDIO_FILE")
+	private byte[] audio_file;
 	@ManyToOne(targetEntity = AudioBean.class)
 	@JoinColumn(name = "MEMBER_NAME")
 	private String audio_member;
@@ -61,6 +63,14 @@ public class AudioBean {
 
 	public void setAudio_name(String audio_name) {
 		this.audio_name = audio_name;
+	}
+
+	public byte[] getAudio_file() {
+		return audio_file;
+	}
+
+	public void setAudio_file(byte[] audio_file) {
+		this.audio_file = audio_file;
 	}
 
 	public String getAudio_member() {
