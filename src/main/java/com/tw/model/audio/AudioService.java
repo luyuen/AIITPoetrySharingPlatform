@@ -32,7 +32,7 @@ public class AudioService {
 		return true;
 	}
 	
-	public List<AudioBean> queryAudioBeans() {
+	public List<AudioBean> queryAudio() {
 		return audioRepository.findAll();
 	}
 	public AudioBean queryById(Integer id) {

@@ -93,7 +93,6 @@ public class AdminOpusController {
 		String saveImageFilePath = saveImageFileTempDir + imageFileNameString;
 		File saveImageFile = new File(saveImageFilePath);
 		imagefile.transferTo(saveImageFile);
-		
 
 		String audioFileNameString = audiofile.getOriginalFilename();
 		String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/") + "audioFileTempDir\\";
@@ -111,7 +110,6 @@ public class AdminOpusController {
 		try (FileInputStream image = new FileInputStream(saveImageFilePath)) {
 			try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
 //				try (FileInputStream ppt = new FileInputStream(savePptFilePath)) {
-				
 
 //					byte[] pptByte = new byte[ppt.available()];
 				byte[] imageByte = new byte[image.available()];
@@ -126,7 +124,7 @@ public class AdminOpusController {
 					OpusBean opus = new OpusBean();
 					opus.setOpus_name(opus_name);
 					opus.setOpus_member(opus_member);
-					
+
 					opus.setOpus_imageName(imageFileNameString);
 					opus.setOpus_audioName(audioFileNameString);
 					opus.setOpus_image(imageByte);
@@ -139,15 +137,15 @@ public class AdminOpusController {
 				}
 			}
 		}
-//		}
 		return null;
+
 
 	}
 
 	@GetMapping("/preview_opus/{opus_id}")
 	public String previewOpusController(@PathVariable("opus_id") int opus_id, Model model) {
 		OpusBean findbyid = opusService.queryById(opus_id);
-		
+
 //		 @GetMapping("/showPPT")
 //		    public void showPPT(@RequestParam("path") String path,HttpServletResponse response) throws IOException {
 //		        byte[] buffer = new byte[1024 * 4];
