@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.cfg.annotations.PrimitiveArrayBinder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -34,10 +33,10 @@ public class OpusBean {
 	private String opus_member;
 	@CreatedDate
 	@Column(name = "OPUS_CREATEDATETIME")
-	private Date opus_createdatetime;
+	private Date opus_createDateTime;
 	@LastModifiedDate
 	@Column(name = "OPUS_LASTDATETIME")
-	private Date opus_lastdatetime;
+	private Date opus_lastDateTime;
 
 	@Column(name = "OPUS_IMAGE")
 	private byte[] opus_image;
@@ -95,20 +94,20 @@ public class OpusBean {
 		this.opus_member = opus_member;
 	}
 
-	public Date getOpus_createdatetime() {
-		return opus_createdatetime;
+	public Date getOpus_createDateTime() {
+		return opus_createDateTime;
 	}
 
-	public void setOpus_createdatetime(Date opus_createdatetime) {
-		this.opus_createdatetime = opus_createdatetime;
+	public void setOpus_createDateTime(Date opus_creatDeateTime) {
+		this.opus_createDateTime = opus_creatDeateTime;
 	}
 
-	public Date getOpus_lastdatetime() {
-		return opus_lastdatetime;
+	public Date getOpus_lastDateTime() {
+		return opus_lastDateTime;
 	}
 
-	public void setOpus_lastdatetime(Date opus_lastdatetime) {
-		this.opus_lastdatetime = opus_lastdatetime;
+	public void setOpus_lastDateTime(Date opus_lastDateTime) {
+		this.opus_lastDateTime = opus_lastDateTime;
 	}
 
 	public byte[] getOpus_image() {

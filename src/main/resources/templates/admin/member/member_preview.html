@@ -12,19 +12,19 @@
 <meta name="author" content="">
 
 <!-- Custom fonts for this template -->
-<link href="../../admin/vendor/fontawesome-free/css/all.min.css"
+<link href="/AIIT/admin/vendor/fontawesome-free/css/all.min.css"
 	rel="stylesheet" type="text/css">
 <link
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
 	rel="stylesheet">
 
 <!-- Custom styles for this template -->
-<link href="../../admin/css/sb-admin-2.min.css" rel="stylesheet">
+<link href="/AIIT/admin/css/sb-admin-2.min.css" rel="stylesheet">
 
 <!-- Custom styles for this page -->
-<link href="../../admin/vendor/datatables/dataTables.bootstrap4.min.css"
+<link href="/AIIT/admin/vendor/datatables/dataTables.bootstrap4.min.css"
 	rel="stylesheet">
-<title>詩歌預覽</title>
+<title>帳號預覽</title>
 
 <style>
 .div1 {
@@ -94,59 +94,41 @@ imgth {
 			<div th:replace="admin/topbar.html"></div>
 			<div id="content" class="div1">
 				<form>
-					<h3 th:text="${findbyaudioid.audio_type} + '預覽 '"></h3>
+					<h3>帳號預覽</h3>
 					<div class="divForm"></div>
 					<table>
 						<tr>
-							<td><label for="audio_id">音檔編號</label>
-							<td><input id="audio_id"
-								th:value="${findbyaudioid.audio_id}" disabled></td>
+							<td><label for="member_name">帳號名稱</label>
+							<td><input id="member_name" th:value="${findbymemberid.member_name}" disabled></td>
 						</tr>
 						<tr>
-							<td><label for="audio_name">錄音檔名</label>
-							<td><input id="audio_name"
-								th:value="${findbyaudioid.audio_name}" disabled></td>
+							<td><label for="member_place">所屬新團</label>
+							<td><input id="membe_place" th:value="${findbymemberid.member_place}" disabled></td>
 						</tr>
 						<tr>
-							<td><label for="audio_originalName">音檔原曲名稱</label>
-							<td><input id="audio_originalName"
-								th:value="${findbyaudioid.audio_originalName}" disabled></td>
+							<td><label for="member_role">服事項目</label>
+							<td><input id="member_role" th:value="${findbymemberid.member_role}" disabled></td>
 						</tr>
 						<tr>
-							<td><label for="audio_member">上傳者</label>
-							<td><input th:value="${findbyaudioid.audio_member}" disabled></td>
-						</tr>
-						<tr>
-							<td><label for="audio_type">音檔種類</label>
-							<td><input th:value="${findbyaudioid.audio_type}" disabled></td>
-						</tr>
 
-						<tr>
-							<td><label for="opus_audio">詩歌錄音</label></td>
-							<td><audio id="audio-1" controls="controls">
-									<source
-										th:src="@{/audioFileTempDir/} + ${findbyaudioid.audio_audioName}"
-										src="" />
-								</audio></td>
+							<td><label for="member_mail">電子郵件</label></td>
+							<td><input id="member_mail" th:value="${findbymemberid.member_mail}" disabled></td>
+
 						</tr>
 						<tr>
-							<td><label for="audio_createDateTime">建立時間</label></td>
-							<td><input id="audio_createDateTime" disabled
-								th:value="${#dates.format(findbyaudioid.audio_createDateTime, 'yyyy-MM-dd HH:mm')}"></td>
+							<td><label for="member_image">照片</label></td>
+							<td><img id="member_image" class="img-thumbnail"
+								th:src="@{/memberImageFileTempDir/} + ${findbymemberid.member_imageName}"
+								alt="" /></td>
 						</tr>
 						<tr>
-							<td><label for="audio_lastDateTime">最後更新時間</label></td>
-							<td><input id="audio_lastDateTime" disabled
-								th:value="${#dates.format(findbyaudioid.audio_lastDateTime, 'yyyy-MM-dd HH:mm')}"></td>
-						</tr>
-						<tr>
-							<td><label for="audio_content">備註:</label></td>
-							<td><input id="audio_content" disabled
-								th:value="${findbyaudioid.audio_content}"></td>
+							<td><label for="member_createDateTime">加入時間</label></td>
+							<td><input id="member_createDateTime" disabled
+								th:value="${#dates.format(findbymemberid.member_createDateTime, 'yyyy-MM-dd HH:mm')}"></td>
 						</tr>
 					</table>
 					<div class="divInput">
-						<a th:href="@{/admin/audio/audio_home}"><input type="button"
+						<a th:href="@{/admin/member/member_home}"><input type="button"
 							value="取消"></a>
 					</div>
 			</div>

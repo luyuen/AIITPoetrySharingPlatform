@@ -75,7 +75,7 @@ public class AdminMemberController {
 		String imageNameString = member_image.getOriginalFilename();
 		System.out.println("image: " + imageNameString);
 
-		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "imageTempDir\\";
+		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "memberImageTempDir\\";
 		File save = new File(saveTempDir);
 		save.mkdirs();
 
@@ -188,7 +188,7 @@ public class AdminMemberController {
 
 	@GetMapping("/delete/{member_name}")
 	public String deleteMember(@PathVariable("member_id") String member_name, Model model) {
-		Optional<MemberBean> finByMemberId = memberService.findByMemberId(member_name);
+		MemberBean finByMemberId = memberService.findByMemberId(member_name);
 		if (finByMemberId != null) {
 			model.addAttribute("findbymemberid", finByMemberId);
 			return "admin/member/delete_member.html";
@@ -204,9 +204,11 @@ public class AdminMemberController {
 
 	}
 	
-	@GetMapping("/preview_member/{mid}")
-	public String previewController() {
-		return "admin/member/preview_member.html" ;
+	@GetMapping("/preview_member/{member_name}")
+	public String previewController(@PathVariable("member_name") String member_name, Model model) {
+		MemberBean findByMemberId = memberService.findByMemberId(member_name);
+		model.addAttribute("findbymemberid", findByMemberId);
+		return "admin/member/member_preview.html" ;
 	}
 //	@PostMapping("state/{member_id}")
 //	public String stateChange(@PathVariable("member_id") Integer member_id,Model model) {

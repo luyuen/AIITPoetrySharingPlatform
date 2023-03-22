@@ -106,9 +106,9 @@
 											<td th:text="${opus.opus_imageName}">forum_image</td>
 											<td th:text="${opus.opus_audioName}">forum_audio</td>
 											<td
-												th:text="${#dates.format(opus.opus_createdatetime, 'yyyy-MM-dd HH:mm')}">forum_datetime</td>
+												th:text="${#dates.format(opus.opus_createDateTime, 'yyyy-MM-dd HH:mm')}">forum_datetime</td>
 											<td
-												th:text="${#dates.format(opus.opus_lastdatetime, 'yyyy-MM-dd HH:mm')}">forum_updatetime</td>
+												th:text="${#dates.format(opus.opus_lastDateTime, 'yyyy-MM-dd HH:mm')}">forum_updatetime</td>
 											<td th:text="${opus.opus_content}">forum_content</td>
 											<td><input th:if="${opus.opus_state} eq C" type="button"
 												value="已下架" disabled> <input

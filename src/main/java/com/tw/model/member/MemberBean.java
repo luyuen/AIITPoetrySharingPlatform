@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,10 @@ public class MemberBean {
 	@CreatedDate
 	@Column(name = "MEMBER_CREATEDATETIME")
 	private Date member_createDateTime;
+	
+	@LastModifiedDate
+	@Column(name = "MEMBER_LASTDATETIME")
+	private Date member_lastDateTime;
 
 	@Column(name = "MEMBER_IMAGE")
 	private byte[] member_image;
@@ -101,6 +106,15 @@ public class MemberBean {
 
 	public void setMember_createDateTime(Date member_createDateTime) {
 		this.member_createDateTime = member_createDateTime;
+	}
+	
+
+	public Date getMember_lastDateTime() {
+		return member_lastDateTime;
+	}
+
+	public void setMember_lastDateTime(Date member_lastDateTime) {
+		this.member_lastDateTime = member_lastDateTime;
 	}
 
 	public byte[] getMember_image() {

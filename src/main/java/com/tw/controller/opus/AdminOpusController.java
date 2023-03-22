@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tw.model.member.MemberBean;
 import com.tw.model.member.MemberService;
 import com.tw.model.opus.OpusBean;
 import com.tw.model.opus.OpusService;
@@ -48,10 +49,12 @@ public class AdminOpusController {
 	@PostMapping("/insert_opus/controller")
 	public String insertOpus(@RequestParam("opus_name") String opus_name,
 //			@RequestParam("pptfile") MultipartFile pptfile,
-			@RequestParam("opus_member") String opus_member, @RequestParam("imagefile") MultipartFile imagefile,
-			@RequestParam("audiofile") MultipartFile audiofile, @RequestParam("opus_content") String opus_content,
+			@RequestParam("opus_member") String opus_member, @RequestParam("opus_imagefile") MultipartFile imagefile,
+			@RequestParam("opus_audiofile") MultipartFile audiofile, @RequestParam("opus_content") String opus_content,
 			Model model) throws IllegalStateException, IOException {
-		if (memberService.findByMemberId(opus_member).isEmpty()) {
+			
+			MemberBean memberBoolean = memberService.findByMemberId(opus_member);
+		if (memberBoolean == null ) {
 			return "redirect:/singin.html";
 		}
 //		String fileName = (String) String.format("%s\\%s.%s", "forum", Instant.now().toEpochMilli(),
@@ -130,7 +133,7 @@ public class AdminOpusController {
 					opus.setOpus_image(imageByte);
 					opus.setOpus_audio(audioByte);
 					opus.setOpus_content(opus_content);
-					opus.setOpus_state('A');
+					opus.setOpus_state('B');
 					opusService.insertOpus(opus);
 
 					return "redirect:/admin/opus/opus_home";
@@ -270,44 +273,76 @@ public class AdminOpusController {
 		OpusBean findbyid = opusService.queryById(opus_id);
 		model.addAttribute("findbyopusid", findbyid);
 
-		return "admin/opus/update_opus.html";
+		return "admin/opus/opus_update.html";
 
 	}
 
 	@PostMapping("/update_opus/controller/{opus_id}")
 //	@ResponseBody
-	public String updateOpus(@PathVariable("opus_id") int forum_id, @RequestParam("opus_name") String opus_name,
-			@RequestParam("opus_image") MultipartFile opus_image, @RequestParam("opus_content") String opus_content,
+	public String updateOpus(@RequestParam("opus_name") String opus_name,
+//			@RequestParam("pptfile") MultipartFile pptfile,
+			@RequestParam("opus_member") String opus_member, @RequestParam("opus_imagefile") MultipartFile imagefile,
+			@RequestParam("opus_audiofile") MultipartFile audiofile, @RequestParam("opus_content") String opus_content,
 			Model model) throws IllegalStateException, IOException {
-		String imageNameString = opus_image.getOriginalFilename();
+			
+			MemberBean memberBoolean = memberService.findByMemberId(opus_member);
+		if (memberBoolean == null ) {
+			return "redirect:/singin.html";
+		}
 
-		System.out.println("image: " + imageNameString);
-		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "imageTempDir\\";
-		File save = new File(saveTempDir);
-		save.mkdirs();
+		
+		String imageFileNameString = imagefile.getOriginalFilename();
+		String saveImageFileTempDir = request.getSession().getServletContext().getRealPath("/") + "imageFileTempDir\\";
+		File imageFile = new File(saveImageFileTempDir);
+		imageFile.mkdirs();
 
-		String saveImagePath = saveTempDir + imageNameString;
+		String saveImageFilePath = saveImageFileTempDir + imageFileNameString;
+		File saveImageFile = new File(saveImageFilePath);
+		imagefile.transferTo(saveImageFile);
 
-		File saveImage = new File(saveImagePath);
-		opus_image.transferTo(saveImage);
+		String audioFileNameString = audiofile.getOriginalFilename();
+		String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/") + "audioFileTempDir\\";
+		File audioFile = new File(saveAudioFileTempDir);
+		audioFile.mkdirs();
 
-		System.out.println("save:" + saveImage);
+		String saveAudioFilePath = saveAudioFileTempDir + audioFileNameString;
+		File saveAudioFile = new File(saveAudioFilePath);
+		audiofile.transferTo(saveAudioFile);
 
-		try (FileInputStream image1 = new FileInputStream(saveImagePath)) {
-			byte[] b = new byte[image1.available()];
-			image1.read();
+//		System.out.println("save:" + savePptFile);
+		System.out.println("save:" + saveImageFile);
+		System.out.println("save:" + saveAudioFile);
 
-			if (imageNameString != null && imageNameString.length() != 0) {
-				OpusBean opus = new OpusBean();
-				opus.setOpus_name(opus_name);
-				opus.setOpus_image(b);
-				opus.setOpus_imageName(imageNameString);
-				opus.setOpus_content(opus_content);
-				opusService.updateOpus(opus);
-				System.out.println("inside");
+		try (FileInputStream image = new FileInputStream(saveImageFilePath)) {
+			try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
+//				try (FileInputStream ppt = new FileInputStream(savePptFilePath)) {
+
+//					byte[] pptByte = new byte[ppt.available()];
+				byte[] imageByte = new byte[image.available()];
+				byte[] audioByte = new byte[audio.available()];
+
+//				ppt.read();
+				image.read();
+				audio.read();
+
+				if (imageByte != null && audioByte != null) {
+
+					OpusBean opus = new OpusBean();
+					opus.setOpus_name(opus_name);
+					opus.setOpus_member(opus_member);
+
+					opus.setOpus_imageName(imageFileNameString);
+					opus.setOpus_audioName(audioFileNameString);
+					opus.setOpus_image(imageByte);
+					opus.setOpus_audio(audioByte);
+					opus.setOpus_content(opus_content);
+					opusService.updateOpus(opus);
+
+					return "redirect:/admin/opus/opus_home";
+				}
 			}
 		}
-		return "admin/forum/success.html";
+		return null;
 	}
 
 	@GetMapping("/delete_opus/{opus_id}")
@@ -335,7 +370,7 @@ public class AdminOpusController {
 		OpusBean opus = opusService.queryById(opus_id);
 		opus.setOpus_state('B');
 		opusService.updateOpus(opus);
-		return "redirect:/admin/opus/opus_home.html";
+		return "redirect:/admin/opus/opus_home";
 
 	}
 
@@ -344,7 +379,7 @@ public class AdminOpusController {
 		OpusBean opus = opusService.queryById(opus_id);
 		opus.setOpus_state('C');
 		opusService.updateOpus(opus);
-		return "redirect:/admin/opus/opus_home.html";
+		return "redirect:/admin/opus/opus_home";
 
 	}
 
@@ -353,7 +388,7 @@ public class AdminOpusController {
 		OpusBean opus = opusService.queryById(opus_id);
 		opus.setOpus_state('B');
 		opusService.updateOpus(opus);
-		return "redirect:/admin/opus/opus_home.html";
+		return "redirect:/admin/opus/opus_home";
 
 	}
 

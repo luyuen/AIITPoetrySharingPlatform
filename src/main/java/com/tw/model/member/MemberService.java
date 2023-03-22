@@ -31,9 +31,9 @@ public class MemberService {
 
 	}
 
-	public Optional<MemberBean> findByMemberId(String id) {
-		return memberRepository.findById(id);
-
+	public MemberBean findByMemberId(String id) {
+		 Optional<MemberBean> findMember = memberRepository.findById(id);
+		 return findMember.get();
 	}
 
 	public MemberBean updateMember(String id, MemberBean member) {
