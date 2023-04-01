@@ -70,6 +70,16 @@ public class OpusBean {
 
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+
+		if (obj instanceof OpusBean) {
+			OpusBean ob = (OpusBean) obj;
+			return this.opus_image.equals(ob.opus_image);
+		}
+		return super.equals(obj);
+	}
+
 	public int getOpus_id() {
 		return opus_id;
 	}

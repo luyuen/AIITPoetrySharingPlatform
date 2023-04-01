@@ -3,6 +3,8 @@ package com.tw.controller.opus;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,10 +53,13 @@ public class AdminOpusController {
 //			@RequestParam("pptfile") MultipartFile pptfile,
 			@RequestParam("opus_member") String opus_member, @RequestParam("opus_imagefile") MultipartFile imagefile,
 			@RequestParam("opus_audiofile") MultipartFile audiofile, @RequestParam("opus_content") String opus_content,
+//			@ModelAttribute("opuses") OpusBean opuses, 
+//			@RequestParam("opus_imagefile") MultipartFile imagefile1,
+//			@RequestParam("opus_audiofile") MultipartFile audiofile, 
 			Model model) throws IllegalStateException, IOException {
-			
-			MemberBean memberBoolean = memberService.findByMemberId(opus_member);
-		if (memberBoolean == null ) {
+
+		MemberBean memberBoolean = memberService.findByMemberId(opus_member);
+		if (memberBoolean == null) {
 			return "redirect:/singin.html";
 		}
 //		String fileName = (String) String.format("%s\\%s.%s", "forum", Instant.now().toEpochMilli(),
@@ -89,6 +94,7 @@ public class AdminOpusController {
 //		imagefile.transferTo(savePptFile);
 
 		String imageFileNameString = imagefile.getOriginalFilename();
+		System.out.println(imageFileNameString);
 		String saveImageFileTempDir = request.getSession().getServletContext().getRealPath("/") + "imageFileTempDir\\";
 		File imageFile = new File(saveImageFileTempDir);
 		imageFile.mkdirs();
@@ -125,9 +131,9 @@ public class AdminOpusController {
 				if (imageByte != null && audioByte != null) {
 
 					OpusBean opus = new OpusBean();
-					opus.setOpus_name(opus_name);
-					opus.setOpus_member(opus_member);
-
+//					opus.setOpus_name(opus_name);
+//					opus.setOpus_member(opus_member);
+//
 					opus.setOpus_imageName(imageFileNameString);
 					opus.setOpus_audioName(audioFileNameString);
 					opus.setOpus_image(imageByte);
@@ -141,7 +147,6 @@ public class AdminOpusController {
 			}
 		}
 		return null;
-
 
 	}
 
@@ -279,89 +284,156 @@ public class AdminOpusController {
 
 	@PostMapping("/update_opus/controller/{opus_id}")
 //	@ResponseBody
-	public String updateOpus(@RequestParam("opus_name") String opus_name,
+	public String updateOpus(@PathVariable("opus_id") int opus_id, @RequestParam("opus_name") String opus_name,
 //			@RequestParam("pptfile") MultipartFile pptfile,
 			@RequestParam("opus_member") String opus_member, @RequestParam("opus_imagefile") MultipartFile imagefile,
 			@RequestParam("opus_audiofile") MultipartFile audiofile, @RequestParam("opus_content") String opus_content,
+			@RequestParam("opus_state") char opus_state,
+//			@PathVariable("opus_id") int opus_id , @ModelAttribute("opuses") OpusBean opuses,
 			Model model) throws IllegalStateException, IOException {
-			
-			MemberBean memberBoolean = memberService.findByMemberId(opus_member);
-		if (memberBoolean == null ) {
+
+		MemberBean memberBoolean = memberService.findByMemberId(opus_member);
+		if (memberBoolean == null) {
 			return "redirect:/singin.html";
 		}
+		byte[] imageByte = null;
+		String saveImageFilePath = null;
+		String imageFileNameString = null;
+		byte[] audioByte = null;
+		String saveAudioFilePath = null;
+		String audioFileNameString = null;
 
-		
-		String imageFileNameString = imagefile.getOriginalFilename();
-		String saveImageFileTempDir = request.getSession().getServletContext().getRealPath("/") + "imageFileTempDir\\";
-		File imageFile = new File(saveImageFileTempDir);
-		imageFile.mkdirs();
+		if (Objects.nonNull(imagefile) && !imagefile.isEmpty()) {
+			String imageFileNameString1 = imagefile.getOriginalFilename();
+			imageFileNameString = imageFileNameString1;
+			String saveImageFileTempDir = request.getSession().getServletContext().getRealPath("/")
+					+ "imageFileTempDir\\";
+			File imageFile = new File(saveImageFileTempDir);
+			imageFile.mkdirs();
 
-		String saveImageFilePath = saveImageFileTempDir + imageFileNameString;
-		File saveImageFile = new File(saveImageFilePath);
-		imagefile.transferTo(saveImageFile);
+			String saveImageFilePath1 = saveImageFileTempDir + imageFileNameString;
+			File saveImageFile = new File(saveImageFilePath1);
+			imagefile.transferTo(saveImageFile);
+			saveImageFilePath = saveImageFilePath1;
+			try (FileInputStream image = new FileInputStream(saveImageFilePath)) {
+				byte[] imageByte1 = new byte[image.available()];
+				imageByte = imageByte1;
+				image.read();
+				System.out.println("save:" + saveImageFile);
 
-		String audioFileNameString = audiofile.getOriginalFilename();
-		String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/") + "audioFileTempDir\\";
-		File audioFile = new File(saveAudioFileTempDir);
-		audioFile.mkdirs();
+			}
 
-		String saveAudioFilePath = saveAudioFileTempDir + audioFileNameString;
-		File saveAudioFile = new File(saveAudioFilePath);
-		audiofile.transferTo(saveAudioFile);
+			if (Objects.nonNull(audiofile) && !imagefile.isEmpty()) {
+				String audioFileNameString1 = audiofile.getOriginalFilename();
+				audioFileNameString = audioFileNameString1;
+				String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/")
+						+ "audioFileTempDir\\";
+				File audioFile = new File(saveAudioFileTempDir);
+				audioFile.mkdirs();
+
+				String saveAudioFilePath1 = saveAudioFileTempDir + audioFileNameString1;
+				
+				File saveAudioFile = new File(saveAudioFilePath1);
+				audiofile.transferTo(saveAudioFile);
+				saveAudioFilePath = saveAudioFilePath1;
 
 //		System.out.println("save:" + savePptFile);
-		System.out.println("save:" + saveImageFile);
-		System.out.println("save:" + saveAudioFile);
+				System.out.println("save:" + saveAudioFile);
 
-		try (FileInputStream image = new FileInputStream(saveImageFilePath)) {
-			try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
-//				try (FileInputStream ppt = new FileInputStream(savePptFilePath)) {
-
-//					byte[] pptByte = new byte[ppt.available()];
-				byte[] imageByte = new byte[image.available()];
-				byte[] audioByte = new byte[audio.available()];
-
+				try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
+					byte[] audioByte1 = new byte[audio.available()];
+					audioByte = audioByte1;
 //				ppt.read();
-				image.read();
-				audio.read();
+					audio.read();
 
-				if (imageByte != null && audioByte != null) {
-
-					OpusBean opus = new OpusBean();
-					opus.setOpus_name(opus_name);
-					opus.setOpus_member(opus_member);
-
-					opus.setOpus_imageName(imageFileNameString);
-					opus.setOpus_audioName(audioFileNameString);
-					opus.setOpus_image(imageByte);
-					opus.setOpus_audio(audioByte);
-					opus.setOpus_content(opus_content);
-					opusService.updateOpus(opus);
-
-					return "redirect:/admin/opus/opus_home";
 				}
 			}
+			{
+
+				OpusBean opus = new OpusBean();
+				opus.setOpus_id(opus_id);
+				opus.setOpus_name(opus_name);
+				opus.setOpus_member(opus_member);
+				opus.setOpus_createDateTime(opusService.queryById(opus_id).getOpus_createDateTime());
+				opus.setOpus_imageName(imageFileNameString);
+				opus.setOpus_audioName(audioFileNameString);
+				opus.setOpus_image(imageByte);
+				opus.setOpus_audio(audioByte);
+				opus.setOpus_content(opus_content);
+				opus.setOpus_state('B');
+				opusService.updateOpus(opus);
+				return "redirect:/admin/opus/opus_home";
+			}
+		}
+//		if (imageByte) {
+//			if (audioByte == null) {
+//
+//				OpusBean opus = new OpusBean();
+//				opus.setOpus_name(opus_name);
+//				opus.setOpus_member(opus_member);
+//				opus.setOpus_content(opus_content);
+//				opus.setOpus_state(opus_state);
+//				opusService.updateOpus(opus);
+//				return "redirect:/admin/opus/opus_home";
+//			}
+//		}
+//		if (audioByte != null && Arrays.equals(audioByte, opusService.queryById(opus_id).getOpus_audio())) {
+////		if (imageByte != null && imageByte.equals(opusService.queryById(opus_id).getOpus_image())){
+//
+//			OpusBean opus = new OpusBean();
+//			opus.setOpus_name(opus_name);
+//			opus.setOpus_member(opus_member);
+//			opus.setOpus_audioName(audioFileNameString);
+//			opus.setOpus_audio(audioByte);
+//			opus.setOpus_content(opus_content);
+//			opus.setOpus_state(opus_state);
+//			opusService.updateOpus(opus);
+//			return "redirect:/admin/opus/opus_home";
+//		}
+//		 else if(audioByte!= null && audioByte.equals(opusService.queryById(opus_id).getOpus_audio())) {
+//			OpusBean opus = new OpusBean();
+//			opus.setOpus_name(opus_name);
+//			opus.setOpus_member(opus_member);
+//			opus.setOpus_audioName(imageFileNameString);
+//			opus.setOpus_audio(imageByte);
+//			opus.setOpus_content(opus_content);
+//			opus.setOpus_state(opus_state);
+//			opusService.updateOpus(opus);
+////		opusService.updateOpus(opuses);
+//			return "redirect:/admin/opus/opus_home";
+//		}
+		if (Objects.isNull(imagefile) && Objects.isNull(audiofile)) {
+			OpusBean opus = new OpusBean();
+			opus.setOpus_name(opus_name);
+			opus.setOpus_member(opus_member);
+			opus.setOpus_content(opus_content);
+			opus.setOpus_state(opus_state);
+			opusService.updateOpus(opus);
+			return "redirect:/admin/opus/opus_home";
 		}
 		return null;
+
 	}
 
 	@GetMapping("/delete_opus/{opus_id}")
 	public String deleteOpusController(@PathVariable("opus_id") int opus_id, Model model) {
 		OpusBean findid = opusService.queryById(opus_id);
 		if (findid != null) {
-			model.addAttribute("findbyforumid", findid);
+			model.addAttribute("findbyopusid", findid);
 			System.out.println(findid);
-			return "admin/opus/delete_opus.html";
+			return "admin/opus/opus_delete.html";
 		}
 		return null;
 
 	}
 
-	@PostMapping("/delete_opus/controller/{opus_id}")
+	@GetMapping("/delete_opus/controller/{opus_id}")
 	public String deleteOpus(@PathVariable("opus_id") int opus_id, Model model) {
 		opusService.deleteOpusById(opus_id);
 		System.out.println(opus_id);
-		return "admin/forum/success.html";
+		Object message = "'已刪除 第' + opus_id + '筆詩歌'";
+		request.setAttribute("message", message);
+		return "redirect:/admin/opus/opus_home";
 
 	}
 

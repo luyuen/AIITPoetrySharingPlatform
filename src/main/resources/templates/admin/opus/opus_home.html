@@ -28,17 +28,18 @@
 
 </head>
 <style>
-.A{
-	color:#FFFF00;
+.A {
+	color: #FFFF00;
 }
-.B{
-	color:#00BFFF;
+
+.B {
+	color: #00BFFF;
 }
-.C{
-	color:#FF0000;
+
+.C {
+	color: #FF0000;
 }
 </style>
-
 <body id="page-top">
 
 	<!-- Page Wrapper -->
@@ -73,6 +74,9 @@
 								<table class="table table-bordered" id="dataTable" width="100%"
 									cellspacing="0">
 									<thead>
+										<div>
+											<input type="hidden" name="message" value="${request.getAttribute('message')}">
+										</div>
 										<tr>
 											<th>詩歌編號</th>
 											<th>詩歌名稱</th>
@@ -117,25 +121,25 @@
 												type="button" value="審查中" disabled></td>
 
 											<td><a
-												th:href="@{/admin/preview_opus/{id}(id=${opus.opus_id})}"><input 
-													type="button" value="預覽"></a>
-													<a
+												th:href="@{/admin/preview_opus/{id}(id=${opus.opus_id})}"><input
+													type="button" value="預覽"></a> <a
 												th:href="@{/admin/upate_opus/{id}(id=${opus.opus_id})}"><input
 													th:if="${opus.opus_state} ne A" type="button" value="更新"></a>
-													 <a
-												th:href="@{/admin/delete_opus/{id}(id=${opus.opus_id})}"><input class=C
-													th:if="${opus.opus_state} eq A" type="button" value="退回"></a>
-													
-														<a th:href="@{/admin/state_opus/01/{id}(id=${opus.opus_id})}"><input class=B
-													th:if="${opus.opus_state} eq A" type="button" value="通過"></a>
-													
-												<a th:href="@{/admin/state_opus/03/{id}(id=${opus.opus_id})}"><input 
+												<a th:href="@{/admin/delete_opus/{id}(id=${opus.opus_id})}"><input
+													class=C th:if="${opus.opus_state} eq A " type="button"
+													value="退回"></a> <a
+												th:href="@{/admin/state_opus/01/{id}(id=${opus.opus_id})}"><input
+													class=B th:if="${opus.opus_state} eq A" type="button"
+													value="通過"></a> <a
+												th:href="@{/admin/state_opus/03/{id}(id=${opus.opus_id})}"><input
 													th:if="${opus.opus_state} eq C" type="button" value="上架"></a>
-													
-												<a th:href="@{/admin/state_opus/02/{id}(id=${opus.opus_id})}"><input class=B 
-													th:if="${opus.opus_state} eq B" type="button" value="下架"></a>
-													
-											</td>
+
+												<a
+												th:href="@{/admin/state_opus/02/{id}(id=${opus.opus_id})}"><input
+													class=B th:if="${opus.opus_state} eq B" type="button"
+													value="下架"></a> <a
+												th:href="@{/admin/delete_opus/{id}(id=${opus.opus_id})}"><input
+													type="button" value="刪除"></a></td>
 										</tr>
 									</tbody>
 								</table>
@@ -197,11 +201,11 @@
 
 	<!-- Page level plugins -->
 	<script src="../../admin/vendor/datatables/jquery.dataTables.min.js"></script>
-	<script src="../../admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="../../admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 	<!-- Page level custom scripts -->
 	<script src="../../admin/js/demo/datatables-demo.js"></script>
 
 </body>
-
 </html>

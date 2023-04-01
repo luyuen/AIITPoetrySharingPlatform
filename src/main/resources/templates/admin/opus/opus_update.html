@@ -106,75 +106,79 @@ imgth {
 			<div id="content">
 				<div th:replace="admin/topbar.html"></div>
 				<div id="content" class="div1">
-				<form
-					th:action="@{/admin/update_opus/controller/{opus_id}(opus_id=${findbyopusid.opus_id})}"
-					method="post" enctype="multipart/form-data">
-					<h3>更新詩歌</h3>
-					<div class="divForm">
-						<table>
-							<tr>
-								<td><label for="opus_name">詩歌名稱:</label>
-								<td><input th:value="${findbyopusid.opus_name}" id="opus_name" name="opus_name" /></td>
-							</tr>
-							<tr>
-								<td><label for="opus_member">上傳者:</label>
-								<td><input th:value="${findbyopusid.opus_member}"
-									id="opus_member" name="opus_member" /></td>
-							</tr>
-							<tr>
+					<form
+						th:action="@{/admin/update_opus/controller/{opus_id}(opus_id=${findbyopusid.opus_id})}"
+						method="post" enctype="multipart/form-data">
+						<h3>更新詩歌</h3>
+						<div class="divForm">
+							<table>
+								<tr>
+									<td><label for="opus_name">詩歌名稱:</label>
+									<td><input id="opus_name"
+										th:field="${findbyopusid.opus_name}" name="opus_name" /></td>
+								</tr>
+								<tr>
+									<td><label for="opus_member">上傳者:</label>
+									<td><input th:field="${findbyopusid.opus_member}"
+										id="opus_member" name="opus_member" /></td>
+								</tr>
+								<tr>
 
-							<td><label for="opus_imageName">詩歌檔</label></td>
-							<td><img class="img-thumbnail"
-								th:src="@{/imageFileTempDir/} + ${findbyopusid.opus_imageName}"
-								alt="" /><input id="opus_imageName" name="opus_imagefile" th:type="file"></td>
+									<td><label for="opus_imageName">詩歌檔</label></td>
+									<td><img class="img-thumbnail"
+										th:src="@{/imageFileTempDir/} + ${findbyopusid.opus_imageName}"
+										alt="" /><input id="opus_imageName" name="opus_imagefile"
+										th:type="file"></td>
 
-						</tr>
-						<tr>
-							<td><label for="opus_audio">詩歌錄音</label></td>
-							<td><audio id="audio-1" controls="controls">
-									<source
-										th:src="@{/audioFileTempDir/} + ${findbyopusid.opus_audioName}" />
-								</audio><input id="opus_audio" name="opus_audiofile" th:type="file"></td>
-						</tr>
-							<tr>
-								<td><label for="opus_content">備註:</label>
-								<td><input th:value="${findbyopusid.opus_content}"id="opus_content" name="opus_content" /></td>
-							</tr>
+								</tr>
+								<tr>
+									<td><label for="opus_audio">詩歌錄音</label></td>
+									<td><audio id="audio-1" controls="controls">
+											<source
+												th:src="@{/audioFileTempDir/} + ${findbyopusid.opus_audioName}" />
+										</audio><input id="opus_audio" name="opus_audiofile" th:type="file"></td>
+								</tr>
+								<tr>
+									<td><label for="opus_content">備註:</label>
+									<td><input th:value="${findbyopusid.opus_content}"
+										id="opus_content" name="opus_content" /></td>
+								</tr>
 
-						</table>
-						<div class="divInput">
+								<tr>
+									<td><input th:value="${findbyopusid.opus_state}"
+										type=hidden name="opus_state" /></td>
+								</tr>
+							</table>
 							<div class="divInput">
-								<input type="submit" value="送出">
+								<div class="divInput">
+									<input type="submit" value="送出">
+								</div>
+								<div class="divInput">
+									<a th:href="@{/admin/opus/opus_home}"><input type="button"
+										value="取消"></a>
+								</div>
 							</div>
-							<div class="divInput">
-								<a th:href="@{/admin/opus/opus_home}"><input type="button"
-									value="取消"></a>
-							</div>
-						</div>
-				</form>
+					</form>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- Bootstrap core JavaScript-->
-	<script src="../vendor/jquery/jquery.min.js"></script>
-	<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+		<!-- Bootstrap core JavaScript-->
+		<script src="../vendor/jquery/jquery.min.js"></script>
+		<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-	<!-- Core plugin JavaScript-->
-	<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+		<!-- Core plugin JavaScript-->
+		<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
 
-	<!-- Custom scripts for all pages-->
-	<script src="../js/sb-admin-2.min.js"></script>
-
-
-	<!-- Page level plugins -->
-	<script src="../vendor/datatables/jquery.dataTables.min.js"></script>
-	<script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-	<!-- Page level custom scripts -->
-	<script src="../js/demo/datatables-demo.js"></script>
+		<!-- Custom scripts for all pages-->
+		<script src="../js/sb-admin-2.min.js"></script>
 
 
+		<!-- Page level plugins -->
+		<script src="../vendor/datatables/jquery.dataTables.min.js"></script>
+		<script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
+		<!-- Page level custom scripts -->
+		<script src="../js/demo/datatables-demo.js"></script>
 </body>
 </html>
