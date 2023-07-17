@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tw.model.exveption.memberNotFindEx;
+
 @Service
 @Transactional
 public class MemberService {
@@ -30,10 +32,21 @@ public class MemberService {
 		return false;
 
 	}
+	
+	public boolean findbyMember(String member) {
+		 Optional<MemberBean> findMember = memberRepository.findById(member);
+		 if(findMember.isEmpty()) {
+			 return false;
+		 }
+		 return true ;
+	}
 
-	public MemberBean findByMemberId(String id) {
-		 Optional<MemberBean> findMember = memberRepository.findById(id);
-		 return findMember.get();
+	public MemberBean findByMemberForLogin(String member) {
+		 Optional<MemberBean> findMember1 = memberRepository.findById(member);
+		 if(member.isEmpty()) {
+			 throw new memberNotFindEx("can't find member");
+		 }
+		 return findMember1.get();			 
 	}
 
 	public MemberBean updateMember(String id, MemberBean member) {

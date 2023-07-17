@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.type.filter.AbstractClassTestingTypeFilter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +46,13 @@ public class AdminMemberController {
 	}
 
 	@PostMapping("/insert_member/controller")
-	public String createMember(@RequestParam(name = "member_name") String member_name,
+	public String createMember
+			(@RequestParam(name = "member_name") String member_name,
 			@RequestParam(name = "member_place") String member_place, @RequestParam("member_role") String member_role,
 			@RequestParam(name = "member_mail") String member_mail,
-			@RequestParam(name = "member_image") MultipartFile member_image) throws IllegalStateException, IOException {
+			@RequestParam(name = "member_password") String member_password,
+			@RequestParam(name = "member_image") MultipartFile member_image)
+					throws IllegalStateException, IOException {
 
 //		String fileName = (String) String.format("%s\\%s.%s", "forum", Instant.now().toEpochMilli(),
 //		image.getContentType().split("/")[1]);
@@ -75,7 +80,7 @@ public class AdminMemberController {
 		String imageNameString = member_image.getOriginalFilename();
 		System.out.println("image: " + imageNameString);
 
-		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "memberImageTempDir\\";
+		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "memberImageFileTempDir\\";
 		File save = new File(saveTempDir);
 		save.mkdirs();
 
@@ -91,12 +96,15 @@ public class AdminMemberController {
 			image1.read();
 
 			if (imageNameString != null && imageNameString.length() != 0) {
+				
+				String encoder = new BCryptPasswordEncoder().encode(member_password);
 
 				MemberBean member = new MemberBean();
 				member.setMember_name(member_name);
 				member.setMember_place(member_place);
 				member.setMember_role(member_role);
 				member.setMember_mail(member_mail);
+				member.setMember_password(encoder);
 				member.setMember_image(b);
 				member.setMember_imageName(imageNameString);
 				member.setMember_state('A');
@@ -151,7 +159,7 @@ public class AdminMemberController {
 		String imageNameString = member_image.getOriginalFilename();
 		System.out.println("image: " + imageNameString);
 
-		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "imageTempDir\\";
+		String saveTempDir = request.getSession().getServletContext().getRealPath("/") + "memberImageTempDir\\";
 		File save = new File(saveTempDir);
 		save.mkdirs();
 
@@ -188,8 +196,8 @@ public class AdminMemberController {
 
 	@GetMapping("/delete/{member_name}")
 	public String deleteMember(@PathVariable("member_id") String member_name, Model model) {
-		MemberBean finByMemberId = memberService.findByMemberId(member_name);
-		if (finByMemberId != null) {
+		boolean finByMemberId = memberService.findbyMember(member_name);
+		if (finByMemberId = true) {
 			model.addAttribute("findbymemberid", finByMemberId);
 			return "admin/member/delete_member.html";
 
@@ -206,7 +214,7 @@ public class AdminMemberController {
 	
 	@GetMapping("/preview_member/{member_name}")
 	public String previewController(@PathVariable("member_name") String member_name, Model model) {
-		MemberBean findByMemberId = memberService.findByMemberId(member_name);
+		boolean findByMemberId = memberService.findbyMember(member_name);
 		model.addAttribute("findbymemberid", findByMemberId);
 		return "admin/member/member_preview.html" ;
 	}

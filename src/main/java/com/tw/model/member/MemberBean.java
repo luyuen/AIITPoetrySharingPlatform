@@ -38,6 +38,9 @@ public class MemberBean {
 
 	@Column(name = "MEMBER_MAIL")
 	private String member_mail;
+	
+	@Column(name = "MEMBER_PASSWORD")
+	private String member_password;
 
 	@Column(name = "MEMBER_IMAGENAME")
 	private String member_imageName;
@@ -90,6 +93,15 @@ public class MemberBean {
 
 	public void setMember_mail(String member_mail) {
 		this.member_mail = member_mail;
+	}
+	
+
+	public String getMember_password() {
+		return member_password;
+	}
+
+	public void setMember_password(String member_password) {
+		this.member_password = member_password;
 	}
 
 	public String getMember_imageName() {

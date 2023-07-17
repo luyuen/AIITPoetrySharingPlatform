@@ -58,9 +58,9 @@ public class AdminOpusController {
 //			@RequestParam("opus_audiofile") MultipartFile audiofile, 
 			Model model) throws IllegalStateException, IOException {
 
-		MemberBean memberBoolean = memberService.findByMemberId(opus_member);
-		if (memberBoolean == null) {
-			return "redirect:/singin.html";
+		boolean memberBoolean = memberService.findbyMember(opus_member);
+		if (memberBoolean == false) {
+			return "redirect:/login.html";
 		}
 //		String fileName = (String) String.format("%s\\%s.%s", "forum", Instant.now().toEpochMilli(),
 //				image.getContentType().split("/")[1]);
@@ -131,9 +131,9 @@ public class AdminOpusController {
 				if (imageByte != null && audioByte != null) {
 
 					OpusBean opus = new OpusBean();
-//					opus.setOpus_name(opus_name);
-//					opus.setOpus_member(opus_member);
-//
+					opus.setOpus_name(opus_name);
+					opus.setOpus_member(opus_member);
+
 					opus.setOpus_imageName(imageFileNameString);
 					opus.setOpus_audioName(audioFileNameString);
 					opus.setOpus_image(imageByte);
@@ -292,9 +292,9 @@ public class AdminOpusController {
 //			@PathVariable("opus_id") int opus_id , @ModelAttribute("opuses") OpusBean opuses,
 			Model model) throws IllegalStateException, IOException {
 
-		MemberBean memberBoolean = memberService.findByMemberId(opus_member);
-		if (memberBoolean == null) {
-			return "redirect:/singin.html";
+		boolean memberBoolean = memberService.findbyMember(opus_member);
+		if (memberBoolean == false) {
+			return "redirect:/login.html";
 		}
 		byte[] imageByte = null;
 		String saveImageFilePath = null;
@@ -303,7 +303,7 @@ public class AdminOpusController {
 		String saveAudioFilePath = null;
 		String audioFileNameString = null;
 
-		if (Objects.nonNull(imagefile) && !imagefile.isEmpty()) {
+		if (Objects.nonNull(imagefile) && imagefile != null) {
 			String imageFileNameString1 = imagefile.getOriginalFilename();
 			imageFileNameString = imageFileNameString1;
 			String saveImageFileTempDir = request.getSession().getServletContext().getRealPath("/")
@@ -322,90 +322,102 @@ public class AdminOpusController {
 				System.out.println("save:" + saveImageFile);
 
 			}
+		}
 
-			if (Objects.nonNull(audiofile) && !imagefile.isEmpty()) {
-				String audioFileNameString1 = audiofile.getOriginalFilename();
-				audioFileNameString = audioFileNameString1;
-				String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/")
-						+ "audioFileTempDir\\";
-				File audioFile = new File(saveAudioFileTempDir);
-				audioFile.mkdirs();
+		if (Objects.nonNull(audiofile) && imagefile != null) {
+			String audioFileNameString1 = audiofile.getOriginalFilename();
+			audioFileNameString = audioFileNameString1;
+			String saveAudioFileTempDir = request.getSession().getServletContext().getRealPath("/")
+					+ "audioFileTempDir\\";
+			File audioFile = new File(saveAudioFileTempDir);
+			audioFile.mkdirs();
 
-				String saveAudioFilePath1 = saveAudioFileTempDir + audioFileNameString1;
-				
-				File saveAudioFile = new File(saveAudioFilePath1);
-				audiofile.transferTo(saveAudioFile);
-				saveAudioFilePath = saveAudioFilePath1;
+			String saveAudioFilePath1 = saveAudioFileTempDir + audioFileNameString1;
+
+			File saveAudioFile = new File(saveAudioFilePath1);
+			audiofile.transferTo(saveAudioFile);
+			saveAudioFilePath = saveAudioFilePath1;
 
 //		System.out.println("save:" + savePptFile);
-				System.out.println("save:" + saveAudioFile);
+			System.out.println("save:" + saveAudioFile);
 
-				try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
-					byte[] audioByte1 = new byte[audio.available()];
-					audioByte = audioByte1;
+			try (FileInputStream audio = new FileInputStream(saveAudioFilePath)) {
+				byte[] audioByte1 = new byte[audio.available()];
+				audioByte = audioByte1;
 //				ppt.read();
-					audio.read();
+				audio.read();
 
-				}
 			}
-			{
+		}
+		if (imageFileNameString != null && audioFileNameString != null) {
+
+			OpusBean opus = new OpusBean();
+			opus.setOpus_id(opus_id);
+			opus.setOpus_name(opus_name);
+			opus.setOpus_member(opus_member);
+			opus.setOpus_createDateTime(opusService.queryById(opus_id).getOpus_createDateTime());
+			opus.setOpus_imageName(imageFileNameString);
+			opus.setOpus_audioName(audioFileNameString);
+			opus.setOpus_image(imageByte);
+			opus.setOpus_audio(audioByte);
+			opus.setOpus_content(opus_content);
+			opus.setOpus_state('B');
+			opusService.updateOpus(opus);
+			return "redirect:/admin/opus/opus_home";
+		}
+		if (imageByte != null) {
+			if (audioByte == null) {
 
 				OpusBean opus = new OpusBean();
-				opus.setOpus_id(opus_id);
 				opus.setOpus_name(opus_name);
 				opus.setOpus_member(opus_member);
-				opus.setOpus_createDateTime(opusService.queryById(opus_id).getOpus_createDateTime());
-				opus.setOpus_imageName(imageFileNameString);
-				opus.setOpus_audioName(audioFileNameString);
-				opus.setOpus_image(imageByte);
-				opus.setOpus_audio(audioByte);
+				opus.setOpus_imageName(opusService.queryById(opus_id).getOpus_imageName());
+				opus.setOpus_audioName(opusService.queryById(opus_id).getOpus_audioName());
+				opus.setOpus_image(opusService.queryById(opus_id).getOpus_image());
+				opus.setOpus_audio(opusService.queryById(opus_id).getOpus_audio());
 				opus.setOpus_content(opus_content);
-				opus.setOpus_state('B');
+				opus.setOpus_state(opus_state);
 				opusService.updateOpus(opus);
 				return "redirect:/admin/opus/opus_home";
 			}
 		}
-//		if (imageByte) {
-//			if (audioByte == null) {
-//
-//				OpusBean opus = new OpusBean();
-//				opus.setOpus_name(opus_name);
-//				opus.setOpus_member(opus_member);
-//				opus.setOpus_content(opus_content);
-//				opus.setOpus_state(opus_state);
-//				opusService.updateOpus(opus);
-//				return "redirect:/admin/opus/opus_home";
-//			}
-//		}
-//		if (audioByte != null && Arrays.equals(audioByte, opusService.queryById(opus_id).getOpus_audio())) {
-////		if (imageByte != null && imageByte.equals(opusService.queryById(opus_id).getOpus_image())){
-//
-//			OpusBean opus = new OpusBean();
-//			opus.setOpus_name(opus_name);
-//			opus.setOpus_member(opus_member);
-//			opus.setOpus_audioName(audioFileNameString);
-//			opus.setOpus_audio(audioByte);
-//			opus.setOpus_content(opus_content);
-//			opus.setOpus_state(opus_state);
-//			opusService.updateOpus(opus);
-//			return "redirect:/admin/opus/opus_home";
-//		}
-//		 else if(audioByte!= null && audioByte.equals(opusService.queryById(opus_id).getOpus_audio())) {
-//			OpusBean opus = new OpusBean();
-//			opus.setOpus_name(opus_name);
-//			opus.setOpus_member(opus_member);
-//			opus.setOpus_audioName(imageFileNameString);
-//			opus.setOpus_audio(imageByte);
-//			opus.setOpus_content(opus_content);
-//			opus.setOpus_state(opus_state);
-//			opusService.updateOpus(opus);
-////		opusService.updateOpus(opuses);
-//			return "redirect:/admin/opus/opus_home";
-//		}
-		if (Objects.isNull(imagefile) && Objects.isNull(audiofile)) {
+		if (audioByte != null && Arrays.equals(audioByte, opusService.queryById(opus_id).getOpus_audio())) {
+//		if (imageByte != null && imageByte.equals(opusService.queryById(opus_id).getOpus_image())){
+
 			OpusBean opus = new OpusBean();
 			opus.setOpus_name(opus_name);
 			opus.setOpus_member(opus_member);
+			opus.setOpus_audioName(audioFileNameString);
+			opus.setOpus_imageName(opusService.queryById(opus_id).getOpus_imageName());
+			opus.setOpus_audio(audioByte);
+			opus.setOpus_image(opusService.queryById(opus_id).getOpus_image());
+			opus.setOpus_content(opus_content);
+			opus.setOpus_state(opus_state);
+			opusService.updateOpus(opus);
+			return "redirect:/admin/opus/opus_home";
+		} else if (imageByte != null && imageByte.equals(opusService.queryById(opus_id).getOpus_audio())) {
+			OpusBean opus = new OpusBean();
+			opus.setOpus_name(opus_name);
+			opus.setOpus_member(opus_member);
+			opus.setOpus_imageName(audioFileNameString);
+			opus.setOpus_audioName(opusService.queryById(opus_id).getOpus_audioName());
+			opus.setOpus_image(imageByte);
+			opus.setOpus_image(opusService.queryById(opus_id).getOpus_image());
+			opus.setOpus_content(opus_content);
+			opus.setOpus_state(opus_state);
+			opusService.updateOpus(opus);
+//		opusService.updateOpus(opuses);
+			return "redirect:/admin/opus/opus_home";
+		}
+		if (Objects.isNull(imagefile) && Objects.isNull(audiofile)) {
+			OpusBean opus = new OpusBean();
+			opus.setOpus_id(opus_id);
+			opus.setOpus_name(opus_name);
+			opus.setOpus_member(opus_member);
+			opus.setOpus_imageName(opusService.queryById(opus_id).getOpus_imageName());
+			opus.setOpus_audioName(opusService.queryById(opus_id).getOpus_audioName());
+			opus.setOpus_image(opusService.queryById(opus_id).getOpus_image());
+			opus.setOpus_audio(opusService.queryById(opus_id).getOpus_audio());
 			opus.setOpus_content(opus_content);
 			opus.setOpus_state(opus_state);
 			opusService.updateOpus(opus);
